@@ -9,6 +9,7 @@ Check [The very basic](#the-very-basic) and go from there.
 
 ## Table of Contents
 * [Requirements](#requirements)
+* [Installation](#installation)
 * [Usage](#usage)
     * [Available functions and their arguments](#available-functions-and-their-arguments)
     * [Registering functions](#registering-functions)
@@ -22,6 +23,16 @@ Check [The very basic](#the-very-basic) and go from there.
 ## Requirements
 What you need:
 * Python 3.4 and up
+
+## Installation
+As this is a single file module without any dependencies other than the default
+python libraries, you have two choices:
+
+1. Download [mapper.py](https://raw.githubusercontent.com/linuxwhatelse/mapper/master/mapper.py) and place it into the root directory of your project
+2. Install it via setup.py
+ * `git clone https://github.com/linuxwhatelse/mapper`
+ * `cd mapper`
+ * `python3 setup.py install`
 
 ## Usage
 
