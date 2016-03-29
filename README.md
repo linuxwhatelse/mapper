@@ -19,6 +19,7 @@ Check [The very basic](#the-very-basic) and go from there.
         * [Query value type cast](#query-value-type-cast)
         * [Extracting values from a URLs path](#extracting-values-from-a-urls-path)
         * [Pythons kwargs](#pythons-kwargs)
+        * [Return values](#return-values)
         * [Using the "add" function instead of the decorator](#using-the-add-function-instead-of-the-decorator)
 
 ## Requirements
@@ -122,6 +123,20 @@ def func(param1, **kwargs):
     print(param1, kwargs)
 
 mpr.call('http://some.url/some/path?param1=123&param2=1.0&param3=true')
+```
+
+#### Return values
+``` python
+import mapper
+
+mpr = mapper.Mapper()
+
+# Whatever you return will be returned by mapper
+@mpr.url('^/some/path/$')
+def func():
+    return ('str', 1, 1.0, True)
+
+a_str, a_int, a_float, a_bool = mpr.call('http://some.url/some/path')
 ```
 
 #### Using the "add" function instead of the decorator
