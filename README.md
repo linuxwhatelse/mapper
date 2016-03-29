@@ -2,9 +2,14 @@ mapper - Simple URL-Scheme resolver
 ===================================
 [![Build Status](https://travis-ci.org/linuxwhatelse/mapper.svg?branch=master)](https://travis-ci.org/linuxwhatelse/mapper)
 
-**mapper** is a small side-project which I created while working on a [Kodi](https://kodi.tv/) add-on.
+**mapper** is a small side-project which I created while working on other *stuff* and was in the need for a super simple url-reslover.  
+The idea was to keep the footprint as small as possible **without** relying on none-python modules.
 
-As it is very generic, you can use it for everything that's somewhat based on URL-Schemes (be it Kodi add-ons, for (RESTful) APIs, ...)
+What you use it for is up to you.  
+
+If you f.e. need a simple JSON Server, check out [mjs](https://github.com/linuxwhatelse/mjs) as it follows the
+same principle.  
+Small footprint, easy to use, and only one dependency - mapper (obviously).
 
 How it works? It's super simple.  
 Check [The very basic](#the-very-basic) and go from there.
@@ -28,7 +33,7 @@ What you need:
 
 ## Installation
 As this is a single file module without any dependencies other than the default
-python libraries, you have two choices:
+python modules, you have two choices:
 
 1. Download [mapper.py](https://raw.githubusercontent.com/linuxwhatelse/mapper/master/mapper.py) and place it into the root directory of your project
 2. Install it via setup.py
@@ -104,6 +109,7 @@ mpr = mapper.Mapper()
 
 # In pure python regex fashion we define a named capture group within our pattern to
 # match whatever we want.
+# Not that type-casting works as well.
 @mpr.url('^/some/path/(?P<param1>.*)/(?P<param2>[0-9]*)/$', type_cast={'param2':int})
 def func(param1, param2):
     print(param1, param2)
@@ -150,7 +156,7 @@ def func(param1, param2):
     print(param1, param2)
 
 # It works the same way as the decorator.
-# The only difference is, that we to specify the function ourselves.
+# The only difference is, that we have to specify the function ourselves.
 mpr.add('^/some/path/(?P<param1>[0-9]*)/$', func, type_cast={'param1' : int, 'param2' : int})
 
 mpr.call('http://some.url/some/path/123?param2=456')
