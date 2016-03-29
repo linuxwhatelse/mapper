@@ -1,5 +1,7 @@
 mapper - Simple URL-Scheme resolver
 ===================================
+[![Build Status](https://travis-ci.org/linuxwhatelse/mapper.svg?branch=master)](https://travis-ci.org/linuxwhatelse/mapper)
+
 **mapper** is a small side-project which I created while working on a [Kodi](https://kodi.tv/) add-on.
 
 As it is very generic, you can use it for everything that's somewhat based on URL-Schemes (be it Kodi add-ons, for (RESTful) APIs, ...)
