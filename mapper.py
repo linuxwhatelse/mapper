@@ -22,7 +22,7 @@ __email__     = 'info@linuxwhatelse.com'
 __copyright__ = 'Copyright 2016, linuxwhatelse'
 __license__   = 'GPLv3'
 
-__version__   = '0.1.0'
+__version__   = '1.0.0'
 
 import os.path
 import re

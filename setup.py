@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='mapper',
-    version='0.1.0',
+    version='1.0.0',
     description='A simple URL-Scheme resolver',
     long_description=long_description,
     url='https://github.com/linuxwhatelse/mapper',
@@ -18,7 +18,7 @@ setup(
     author_email='info@linuxwhatelse.com',
     license='GPLv3',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
@@ -28,6 +28,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    keywords='url scheme mapper',
+    keywords='url scheme resolver mapper',
     py_modules=['mapper'],
 )
