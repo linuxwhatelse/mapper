@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='mapper',
-    version='1.0.0',
+    version='1.1.0',
     description='A simple URL-Scheme resolver',
     long_description=long_description,
     url='https://github.com/linuxwhatelse/mapper',
