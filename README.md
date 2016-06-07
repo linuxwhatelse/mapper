@@ -53,7 +53,10 @@ mpr = mapper.Mapper()
 
 # Note: A path will ALWAYS end with a "/" regardless
 # if your URL contains a trailing "/" or not
+
+# Choose one of the two decorators
 @mpr.url('^/some/path/$')  # Regex pattern
+@mpr.s_url('/some/path/')  # Simple path
 def func():
     print('func called')
 
@@ -69,7 +72,7 @@ mpr = mapper.Mapper()
 
 # Note: Adding a query does NOT change the fact that
 # the path will end with a "/" for the regex pattern
-@mpr.url('^/some/path/$')
+@mpr.s_url('/some/path/')
 def func(param1, param2='default'):
     print(param1, param2)
 
@@ -94,7 +97,7 @@ mpr = mapper.Mapper()
 # Note for bool:
 #  1. Casting is case-insensitive.
 #  2. 1 and 0 can be casted as well
-@mpr.url('^/some/path/$', type_cast={'a_int' : int, 'a_float' : float, 'a_bool' : bool})
+@mpr.s_url('/some/path/', type_cast={'a_int' : int, 'a_float' : float, 'a_bool' : bool})
 def func(a_int, a_float, a_bool):
     print(a_int, a_float, a_bool)
 
@@ -109,8 +112,10 @@ mpr = mapper.Mapper()
 
 # In pure python regex fashion we define a named capture group within our pattern to
 # match whatever we want.
+# We can use a simplified url as well though.
 # Not that type-casting works as well.
-@mpr.url('^/some/path/(?P<param1>.*)/(?P<param2>[0-9]*)/$', type_cast={'param2':int})
+@mpr.url('^/some/path/(?P<param1>[^/]*)/(?P<param2>[0-9]*)/$', type_cast={'param2':int}) # Regex pattern
+@mpr.s_url('/some/path/<param1>/<param2>/', type_cast={'param2':int})                    # Simple path
 def func(param1, param2):
     print(param1, param2)
 
@@ -124,7 +129,7 @@ import mapper
 mpr = mapper.Mapper()
 
 # It's pretty simple and type-casting works as well
-@mpr.url('^/some/path/$', type_cast={'param1' : int, 'param2' : float, 'param3' : bool})
+@mpr.s_url('/some/path/', type_cast={'param1' : int, 'param2' : float, 'param3' : bool})
 def func(param1, **kwargs):
     print(param1, kwargs)
 
@@ -138,7 +143,7 @@ import mapper
 mpr = mapper.Mapper()
 
 # Whatever you return will be returned by mapper
-@mpr.url('^/some/path/$')
+@mpr.s_url('/some/path/')
 def func():
     return ('str', 1, 1.0, True)
 
@@ -158,6 +163,7 @@ def func(param1, param2):
 # It works the same way as the decorator.
 # The only difference is, that we have to specify the function ourselves.
 mpr.add('^/some/path/(?P<param1>[0-9]*)/$', func, type_cast={'param1' : int, 'param2' : int})
+mpr.s_add('/some/path/<param1>/', func, type_cast={'param1' : int, 'param2' : int})
 
 mpr.call('http://some.url/some/path/123?param2=456')
 ```
