@@ -30,6 +30,7 @@ import inspect
 import urllib
 import urllib.parse
 
+
 class Mapper(object):
     _data_store = []
 
@@ -48,13 +49,10 @@ class Mapper(object):
             type_cast = {}
 
         def decorator(function):
-            self._data_store.append({
-                'pattern'   : pattern,
-                'function'  : function,
-                'method'    : method,
-                'type_cast' : type_cast,
-            })
+            self.add(pattern, function, method, type_cast)
+
             return function
+
         return decorator
 
     def add(self, pattern, function, method=None, type_cast=None):
@@ -79,6 +77,46 @@ class Mapper(object):
             'type_cast' : type_cast,
         })
 
+    def s_url(self, path, method=None, type_cast=None):
+        """Decorator for registering a simple path.
+
+        Args:
+            path (str): Path to be matched
+            method (Optional[str]): Usually used to define one of
+                GET, POST, PUT, DELETE (However, you can use whatever you want)
+                Defaults to None
+            type_cast (Optional[dict]): Mapping between the param name and
+                one of int, float, bool
+        """
+        if not type_cast:
+            type_cast = {}
+
+        def decorator(function):
+            self.s_add(path, function, method, type_cast)
+
+            return function
+
+        return decorator
+
+    def s_add(self, path, function, method=None, type_cast=None):
+        """Function for registering a simple path.
+
+        Args:
+            path (str): Path to be matched
+            function (function): Function to associate with this path
+            method (Optional[str]): Usually used to define one of
+                GET, POST, PUT, DELETE (However, you can use whatever you want)
+                Defaults to None
+            type_cast (Optional[dict]): Mapping between the param name and
+                one of int, float, bool
+        """
+        path = '^/%s' % path.lstrip('/')
+        path = '%s/$' % path.rstrip('/')
+        path = path.replace('<', '(?P<')
+        path = path.replace('>', '>[^/]*)')
+
+        self.add(path, function, method, type_cast)
+
     def clear(self):
         """Clears all data associated with the mappers data store"""
         del self._data_store[:]
@@ -100,8 +138,8 @@ class Mapper(object):
         if not args:
             args = {}
 
-        data = urllib.parse.urlparse(url)
-        path = data.path.rstrip('/') + '/'
+        data  = urllib.parse.urlparse(url)
+        path  = data.path.rstrip('/') + '/'
         _args = dict(urllib.parse.parse_qs(data.query, keep_blank_values=True))
 
         for elem in self._data_store:
@@ -159,7 +197,7 @@ class Mapper(object):
             val = float(value)
 
         elif to == bool:
-            if value.lower() == 'true' or value== '1':
+            if value.lower() == 'true' or value == '1':
                 val = True
 
             elif value.lower() == 'false' or value == '0':
