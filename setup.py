@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='mapper',
+    name='lwe-mapper',
     version='1.1.0',
     description='A simple URL-Scheme resolver',
     long_description=long_description,

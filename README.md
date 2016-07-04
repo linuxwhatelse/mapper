@@ -32,14 +32,10 @@ What you need:
 * Python 3.4 and up
 
 ## Installation
-As this is a single file module without any dependencies other than the default
-python modules, you have two choices:
+You have two options:
 
-1. Download [mapper.py](https://raw.githubusercontent.com/linuxwhatelse/mapper/master/mapper.py) and place it into the root directory of your project
-2. Install it via setup.py
- * `git clone https://github.com/linuxwhatelse/mapper`
- * `cd mapper`
- * `python3 setup.py install`
+1. Install via pypi `pip install lwe-mapper`
+2. Download [mapper.py](https://github.com/linuxwhatelse/mapper/blob/master/mapper.py) and place it into the root directory of your project
 
 ## Usage
 
