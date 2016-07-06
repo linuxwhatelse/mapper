@@ -1,6 +1,7 @@
 mapper - Simple URL-Scheme resolver
 ===================================
 [![Build Status](https://travis-ci.org/linuxwhatelse/mapper.svg?branch=master)](https://travis-ci.org/linuxwhatelse/mapper)
+[![pypi](https://img.shields.io/pypi/v/lwe-mapper.svg)](https://pypi.python.org/pypi/lwe-mapper)
 
 **mapper** is a small side-project which I created while working on other *stuff* and was in the need for a super simple url-reslover.  
 The idea was to keep the footprint as small as possible **without** relying on none-python modules.
