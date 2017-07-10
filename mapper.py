@@ -3,6 +3,7 @@ import sys
 import os.path
 import re
 import inspect
+import threading
 
 if sys.version_info.major == 3:
     import urllib
@@ -12,9 +13,47 @@ elif sys.version_info.major == 2:
 else:
     raise ImportError('Python vesrion not supported.')
 
+_lock = threading.RLock()
+_instances = dict()
+
 
 class Mapper(object):
+    _name = None
     _data_store = []
+
+    @property
+    def name(self):
+        return self._name
+
+    @staticmethod
+    def get(name=__name__):
+        """Return a Mapper instance with the given name. If the name already
+           exist return its instance.
+
+           Does not work if a Mapper was created via its constructor.
+
+           Using `Mapper.get()` is the prefered way.
+
+        Args:
+            name (str): Name of the instance
+        """
+        mpr = None
+        if not isinstance(name, str):
+            raise TypeError('A mapper name must be a string')
+
+        _lock.acquire()
+
+        if name in _instances:
+            mpr = _instances[name]
+
+        else:
+            mpr = Mapper()
+            _instances[name] = mpr
+
+        mpr._name = name
+
+        _lock.release()
+        return mpr
 
     def url(self, pattern, method=None, type_cast=None):
         """Decorator for registering a path pattern.
@@ -32,7 +71,26 @@ class Mapper(object):
 
         def decorator(function):
             self.add(pattern, function, method, type_cast)
+            return function
 
+        return decorator
+
+    def s_url(self, path, method=None, type_cast=None):
+        """Decorator for registering a simple path.
+
+        Args:
+            path (str): Path to be matched
+            method (Optional[str]): Usually used to define one of
+                GET, POST, PUT, DELETE (However, you can use whatever you want)
+                Defaults to None
+            type_cast (Optional[dict]): Mapping between the param name and
+                one of int, float, bool
+        """
+        if not type_cast:
+            type_cast = {}
+
+        def decorator(function):
+            self.s_add(path, function, method, type_cast)
             return function
 
         return decorator
@@ -52,33 +110,14 @@ class Mapper(object):
         if not type_cast:
             type_cast = {}
 
+        _lock.acquire()
         self._data_store.append({
             'pattern': pattern,
             'function': function,
             'method': method,
             'type_cast': type_cast,
         })
-
-    def s_url(self, path, method=None, type_cast=None):
-        """Decorator for registering a simple path.
-
-        Args:
-            path (str): Path to be matched
-            method (Optional[str]): Usually used to define one of
-                GET, POST, PUT, DELETE (However, you can use whatever you want)
-                Defaults to None
-            type_cast (Optional[dict]): Mapping between the param name and
-                one of int, float, bool
-        """
-        if not type_cast:
-            type_cast = {}
-
-        def decorator(function):
-            self.s_add(path, function, method, type_cast)
-
-            return function
-
-        return decorator
+        _lock.release()
 
     def s_add(self, path, function, method=None, type_cast=None):
         """Function for registering a simple path.
@@ -92,19 +131,27 @@ class Mapper(object):
             type_cast (Optional[dict]): Mapping between the param name and
                 one of int, float, bool
         """
-        path = '^/%s' % path.lstrip('/')
-        path = '%s/$' % path.rstrip('/')
-        path = path.replace('<', '(?P<')
-        path = path.replace('>', '>[^/]*)')
+        _lock.acquire()
+        try:
+            path = '^/%s' % path.lstrip('/')
+            path = '%s/$' % path.rstrip('/')
+            path = path.replace('<', '(?P<')
+            path = path.replace('>', '>[^/]*)')
 
-        self.add(path, function, method, type_cast)
+            self.add(path, function, method, type_cast)
+        finally:
+            _lock.release()
 
     def clear(self):
         """Clears all data associated with the mappers data store"""
-        del self._data_store[:]
+        _lock.acquire()
+        try:
+            del self._data_store[:]
+        finally:
+            _lock.release()
 
     def call(self, url, method=None, args=None):
-        """Calls the first function matching the urls pattern and method (if any)
+        """Calls the first function matching the urls pattern and method.
 
         Args:
             url (str): Url where a matching function should be called

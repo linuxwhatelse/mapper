@@ -1,11 +1,34 @@
 from context import mapper
 
 import unittest
+import threading
 
 mpr = mapper.Mapper()
 
 
 class TestMapper(unittest.TestCase):
+
+    def test_instances(self):
+        inst1 = mapper.Mapper().get('inst1')
+        inst2 = mapper.Mapper().get('inst2')
+        self.assertNotEqual(inst1, inst2)
+
+        inst1_2 = mapper.Mapper().get('inst1')
+        inst2_2 = mapper.Mapper().get('inst2')
+        self.assertNotEqual(inst1_2, inst2_2)
+
+        self.assertEqual(inst1, inst1_2)
+        self.assertEqual(inst2, inst2_2)
+
+        def _async():
+            inst1_3 = mapper.Mapper().get('inst1')
+            inst2_3 = mapper.Mapper().get('inst2')
+            self.assertNotEqual(inst1_3, inst2_3)
+
+            self.assertEqual(inst1, inst1_2, inst1_3)
+            self.assertEqual(inst2, inst2_2, inst2_3)
+
+        threading.Thread(target=_async).start()
 
     def test_decorator_simple(self):
         @mpr.s_url('/index/')
