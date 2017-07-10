@@ -19,6 +19,8 @@ _instances = dict()
 
 class Mapper(object):
     _name = None
+    _lock = threading.RLock()
+
     _data_store = []
 
     @property
@@ -110,14 +112,14 @@ class Mapper(object):
         if not type_cast:
             type_cast = {}
 
-        _lock.acquire()
+        self._lock.acquire()
         self._data_store.append({
             'pattern': pattern,
             'function': function,
             'method': method,
             'type_cast': type_cast,
         })
-        _lock.release()
+        self._lock.release()
 
     def s_add(self, path, function, method=None, type_cast=None):
         """Function for registering a simple path.
@@ -131,7 +133,7 @@ class Mapper(object):
             type_cast (Optional[dict]): Mapping between the param name and
                 one of int, float, bool
         """
-        _lock.acquire()
+        self._lock.acquire()
         try:
             path = '^/%s' % path.lstrip('/')
             path = '%s/$' % path.rstrip('/')
@@ -140,15 +142,15 @@ class Mapper(object):
 
             self.add(path, function, method, type_cast)
         finally:
-            _lock.release()
+            self._lock.release()
 
     def clear(self):
         """Clears all data associated with the mappers data store"""
-        _lock.acquire()
+        self._lock.acquire()
         try:
             del self._data_store[:]
         finally:
-            _lock.release()
+            self._lock.release()
 
     def call(self, url, method=None, args=None):
         """Calls the first function matching the urls pattern and method.
