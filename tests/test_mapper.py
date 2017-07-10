@@ -21,12 +21,14 @@ class TestMapper(unittest.TestCase):
         def _index(param1, param2):
             return '%s %s' % (param1, param2)
 
-        self.assertEqual('123 456', mpr.call('http://some.url/index?param1=123&param2=456'))
+        self.assertEqual('123 456', mpr.call('http://some.url/index'
+                                             '?param1=123&param2=456'))
 
         mpr.clear()
 
     def test_decorator_typecast(self):
-        @mpr.url('^/index/$', type_cast={'a_int' : int, 'a_float' : float, 'a_bool' : bool})
+        @mpr.url('^/index/$', type_cast={'a_int': int, 'a_float': float,
+                                         'a_bool': bool})
         def _index(a_int, a_float, a_bool):
             if (isinstance(a_int, int) and
                     isinstance(a_float, float) and
@@ -36,16 +38,19 @@ class TestMapper(unittest.TestCase):
             else:
                 return False
 
-        self.assertTrue(mpr.call('http://some.url/index?a_int=123&a_float=1.0&a_bool=true'))
+        self.assertTrue(mpr.call('http://some.url/index'
+                                 '?a_int=123&a_float=1.0&a_bool=true'))
 
         mpr.clear()
 
     def test_decorator_dynamic_url(self):
-        @mpr.url('^/index/(?P<some_path>[^/]*)/(?P<some_id>[0-9]*)/$', type_cast={'some_id' : int})
+        @mpr.url('^/index/(?P<some_path>[^/]*)/(?P<some_id>[0-9]*)/$',
+                 type_cast={'some_id': int})
         def _index(some_path, some_id):
             return (some_path, some_id)
 
-        self.assertEqual(('abc', 123), mpr.call('http://some.url/index/abc/123/'))
+        self.assertEqual(('abc', 123),
+                         mpr.call('http://some.url/index/abc/123/'))
 
         # Will not match because the regex expects :some_id: to be [0-9]*
         self.assertIsNone(None, mpr.call('http://some.url/index/abc/def/'))
@@ -53,17 +58,19 @@ class TestMapper(unittest.TestCase):
         mpr.clear()
 
     def test_decorater_dynamic_simple_url(self):
-        @mpr.s_url('/index/<some_id>/', type_cast={'some_id' : int})
+        @mpr.s_url('/index/<some_id>/', type_cast={'some_id': int})
         def _index(some_id):
             return ('main', some_id)
 
-        @mpr.s_url('/index/<some_id>/sub/', type_cast={'some_id' : int})
+        @mpr.s_url('/index/<some_id>/sub/', type_cast={'some_id': int})
         def _index(some_id):
             return ('sub', some_id)
 
-        self.assertEqual(('main', 123), mpr.call('http://some.url/index/123/'))
+        self.assertEqual(('main', 123),
+                         mpr.call('http://some.url/index/123/'))
 
-        self.assertEqual(('sub', 456), mpr.call('http://some.url/index/456/sub'))
+        self.assertEqual(('sub', 456),
+                         mpr.call('http://some.url/index/456/sub'))
 
         mpr.clear()
 
@@ -76,8 +83,10 @@ class TestMapper(unittest.TestCase):
         def _index():
             return 'POST'
 
-        self.assertEqual('GET',  mpr.call('http://some.url/index/', method='GET'))
-        self.assertEqual('POST', mpr.call('http://some.url/index/', method='POST'))
+        self.assertEqual('GET',  mpr.call('http://some.url/index/',
+                         method='GET'))
+        self.assertEqual('POST', mpr.call('http://some.url/index/',
+                         method='POST'))
 
         mpr.clear()
 
@@ -86,7 +95,8 @@ class TestMapper(unittest.TestCase):
         def _index(param1, param2):
             return '%s %s' % (param1, param2)
 
-        self.assertEqual('123 456', mpr.call('http://some.url/index/', args={'param1': '123', 'param2': '456'}))
+        self.assertEqual('123 456', mpr.call('http://some.url/index/',
+                         args={'param1': '123', 'param2': '456'}))
 
         mpr.clear()
 
@@ -95,7 +105,8 @@ class TestMapper(unittest.TestCase):
         def _index(param1, param2=456):
             return '%s %s' % (param1, param2)
 
-        self.assertEqual('123 456', mpr.call('http://some.url/index/', args={'param1': '123'}))
+        self.assertEqual('123 456', mpr.call('http://some.url/index/',
+                         args={'param1': '123'}))
 
         mpr.clear()
 
@@ -104,7 +115,8 @@ class TestMapper(unittest.TestCase):
         def _index(param1, param2=456):
             return '%s %s' % (param1, param2)
 
-        self.assertEqual('123 789', mpr.call('http://some.url/index/', args={'param1': '123', 'param2': '789'}))
+        self.assertEqual('123 789', mpr.call('http://some.url/index/',
+                         args={'param1': '123', 'param2': '789'}))
 
         mpr.clear()
 
@@ -121,7 +133,7 @@ class TestMapper(unittest.TestCase):
         mpr.clear()
 
     def test_decorator_list(self):
-        @mpr.url('^/index/$', type_cast={'param1' : int})
+        @mpr.url('^/index/$', type_cast={'param1': int})
         def _index(param1):
             if (not isinstance(param1, list) and
                     param1[0] == 123 and param1[1] == 456):
@@ -130,7 +142,8 @@ class TestMapper(unittest.TestCase):
             else:
                 return True
 
-        self.assertTrue(mpr.call('http://some.url/index?param1=123&param1=456'))
+        self.assertTrue(
+            mpr.call('http://some.url/index?param1=123&param1=456'))
 
         mpr.clear()
 
@@ -139,7 +152,8 @@ class TestMapper(unittest.TestCase):
         def _index(param1, param2):
             return '%s-%s' % (param1, param2)
 
-        self.assertEqual('-', mpr.call('http://some.url/index?param1=&param2='))
+        self.assertEqual('-',
+                         mpr.call('http://some.url/index?param1=&param2='))
 
         mpr.clear()
 
@@ -177,7 +191,6 @@ class TestMapper(unittest.TestCase):
         mpr.clear()
 
         self.assertEqual([], mpr._data_store)
-
 
 
 if __name__ == '__main__':

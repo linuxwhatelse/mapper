@@ -4,7 +4,8 @@ setup(
     name='lwe-mapper',
     version='1.1.0',
     description='A simple URL-Scheme resolver',
-    long_description='For an overview and some examples, head over to `Github <https://github.com/linuxwhatelse/mapper>`_',
+    long_description='For an overview and some examples, head over to'
+                     '`Github <https://github.com/linuxwhatelse/mapper>`_',
     url='https://github.com/linuxwhatelse/mapper',
     author='linuxwhatelse',
     author_email='info@linuxwhatelse.com',

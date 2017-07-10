@@ -53,10 +53,10 @@ class Mapper(object):
             type_cast = {}
 
         self._data_store.append({
-            'pattern'   : pattern,
-            'function'  : function,
-            'method'    : method,
-            'type_cast' : type_cast,
+            'pattern': pattern,
+            'function': function,
+            'method': method,
+            'type_cast': type_cast,
         })
 
     def s_url(self, path, method=None, type_cast=None):
@@ -114,26 +114,29 @@ class Mapper(object):
                 which should be passed to the matching function
 
         Returns:
-            Returns the functions return value, None if it didn't return anything.
+            Returns the functions return value or None if it didn't return
+            anything.
             Also, it will return None if no matching function was called.
         """
         if not args:
             args = {}
 
         if sys.version_info.major == 3:
-            data  = urllib.parse.urlparse(url)
-            path  = data.path.rstrip('/') + '/'
-            _args = dict(urllib.parse.parse_qs(data.query, keep_blank_values=True))
+            data = urllib.parse.urlparse(url)
+            path = data.path.rstrip('/') + '/'
+            _args = dict(urllib.parse.parse_qs(data.query,
+                                               keep_blank_values=True))
         elif sys.version_info.major == 2:
             data = urlparse.urlparse(url)
             path = data.path.rstrip('/') + '/'
-            _args = dict(urlparse.parse_qs(data.query, keep_blank_values=True))
+            _args = dict(urlparse.parse_qs(data.query,
+                                           keep_blank_values=True))
 
         for elem in self._data_store:
-            pattern     = elem['pattern']
-            function    = elem['function']
-            _method     = elem['method']
-            type_cast   = elem['type_cast']
+            pattern = elem['pattern']
+            function = elem['function']
+            _method = elem['method']
+            type_cast = elem['type_cast']
 
             result = re.match(pattern, path)
 
@@ -194,7 +197,7 @@ class Mapper(object):
 
     def _get_function_args(self, func):
         if sys.version_info.major == 3:
-            sig  = inspect.signature(func)
+            sig = inspect.signature(func)
             args = list(sig.parameters)
 
         elif sys.version_info.major == 2:
