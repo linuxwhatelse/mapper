@@ -1,34 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
-    Copyright: (c) 2015 linuxwhatelse (info@linuxwhatelse.de)
-    License: GPLv3, see LICENSE for more details
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
-
-__author__    = 'linuxwhatelse'
-__email__     = 'info@linuxwhatelse.com'
-__copyright__ = 'Copyright 2016, linuxwhatelse'
-__license__   = 'GPLv3'
-
-__version__   = '1.1.0'
-
+import sys
 import os.path
 import re
 import inspect
-import urllib
-import urllib.parse
+
+if sys.version_info.major == 3:
+    import urllib
+    import urllib.parse
+elif sys.version_info.major == 2:
+    import urlparse
+else:
+    raise ImportError('Python vesrion not supported.')
 
 
 class Mapper(object):
@@ -138,9 +120,14 @@ class Mapper(object):
         if not args:
             args = {}
 
-        data  = urllib.parse.urlparse(url)
-        path  = data.path.rstrip('/') + '/'
-        _args = dict(urllib.parse.parse_qs(data.query, keep_blank_values=True))
+        if sys.version_info.major == 3:
+            data  = urllib.parse.urlparse(url)
+            path  = data.path.rstrip('/') + '/'
+            _args = dict(urllib.parse.parse_qs(data.query, keep_blank_values=True))
+        elif sys.version_info.major == 2:
+            data = urlparse.urlparse(url)
+            path = data.path.rstrip('/') + '/'
+            _args = dict(urlparse.parse_qs(data.query, keep_blank_values=True))
 
         for elem in self._data_store:
             pattern     = elem['pattern']
@@ -206,10 +193,11 @@ class Mapper(object):
         return val
 
     def _get_function_args(self, func):
-        args = []
-        sig  = inspect.signature(func)
+        if sys.version_info.major == 3:
+            sig  = inspect.signature(func)
+            args = list(sig.parameters)
 
-        for s in sig.parameters:
-            args.append(s)
+        elif sys.version_info.major == 2:
+            args, varargs, varkw, defaults = inspect.getargspec(func)
 
         return args

@@ -90,6 +90,24 @@ class TestMapper(unittest.TestCase):
 
         mpr.clear()
 
+    def test_decorator_default_value(self):
+        @mpr.s_url('/index/')
+        def _index(param1, param2=456):
+            return '%s %s' % (param1, param2)
+
+        self.assertEqual('123 456', mpr.call('http://some.url/index/', args={'param1': '123'}))
+
+        mpr.clear()
+
+    def test_decorator_default_value_overwrite(self):
+        @mpr.s_url('/index/')
+        def _index(param1, param2=456):
+            return '%s %s' % (param1, param2)
+
+        self.assertEqual('123 789', mpr.call('http://some.url/index/', args={'param1': '123', 'param2': '789'}))
+
+        mpr.clear()
+
     def test_decorator_kwargs(self):
         @mpr.url('^/index/$')
         def _index(**kwargs):

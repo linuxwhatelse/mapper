@@ -30,7 +30,7 @@ Check [The very basic](#the-very-basic) and go from there.
 
 ## Requirements
 What you need:
-* Python 3.4 and up
+* Python 2.7 or up
 
 ## Installation
 You have two options:
