@@ -30,6 +30,21 @@ class TestMapper(unittest.TestCase):
 
         threading.Thread(target=_async).start()
 
+    def test_mutable(self):
+        inst1 = mapper.Mapper.get('inst1')
+        inst2 = mapper.Mapper.get('inst2')
+
+        @inst1.s_url('/index/')
+        def _index1():
+            return 1
+
+        @inst2.s_url('/index/')
+        def _index2():
+            return 2
+
+        self.assertEqual(1, inst1.call('http://some.url/index'))
+        self.assertEqual(2, inst2.call('http://some.url/index'))
+
     def test_decorator_simple(self):
         @mpr.s_url('/index/')
         def _index():

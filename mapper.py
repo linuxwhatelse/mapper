@@ -21,7 +21,10 @@ class Mapper(object):
     _name = None
     _lock = threading.RLock()
 
-    _data_store = []
+    _data_store = None
+
+    def __init__(self):
+        self._data_store = list()
 
     @property
     def name(self):
