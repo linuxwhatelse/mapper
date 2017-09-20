@@ -13,8 +13,8 @@ elif sys.version_info.major == 2:
 else:
     raise ImportError('Python vesrion not supported.')
 
-_lock = threading.RLock()
-_instances = dict()
+_LOCK = threading.RLock()
+_INSTANCES = dict()
 
 
 class Mapper(object):
@@ -43,18 +43,15 @@ class Mapper(object):
         if not isinstance(name, str):
             raise TypeError('A mapper name must be a string')
 
-        _lock.acquire()
+        with _LOCK:
+            if name in _INSTANCES:
+                mpr = _INSTANCES[name]
 
-        if name in _instances:
-            mpr = _instances[name]
+            else:
+                mpr = cls()
+                _INSTANCES[name] = mpr
 
-        else:
-            mpr = cls()
-            _instances[name] = mpr
-
-        mpr._name = name
-
-        _lock.release()
+            mpr._name = name
         return mpr
 
     def url(self, pattern, method=None, type_cast=None):
@@ -112,14 +109,13 @@ class Mapper(object):
         if not type_cast:
             type_cast = {}
 
-        self._lock.acquire()
-        self._data_store.append({
-            'pattern': pattern,
-            'function': function,
-            'method': method,
-            'type_cast': type_cast,
-        })
-        self._lock.release()
+        with self._lock:
+            self._data_store.append({
+                'pattern': pattern,
+                'function': function,
+                'method': method,
+                'type_cast': type_cast,
+            })
 
     def s_add(self, path, function, method=None, type_cast=None):
         """Function for registering a simple path.
@@ -133,24 +129,24 @@ class Mapper(object):
             type_cast (Optional[dict]): Mapping between the param name and
                 one of int, float, bool
         """
-        self._lock.acquire()
-        try:
-            path = '^/%s' % path.lstrip('/')
-            path = '%s/$' % path.rstrip('/')
-            path = path.replace('<', '(?P<')
-            path = path.replace('>', '>[^/]*)')
+        with self._lock:
+            try:
+                path = '^/%s' % path.lstrip('/')
+                path = '%s/$' % path.rstrip('/')
+                path = path.replace('<', '(?P<')
+                path = path.replace('>', '>[^/]*)')
 
-            self.add(path, function, method, type_cast)
-        finally:
-            self._lock.release()
+                self.add(path, function, method, type_cast)
+            except Exception:
+                pass
 
     def clear(self):
         """Clears all data associated with the mappers data store"""
-        self._lock.acquire()
-        try:
-            del self._data_store[:]
-        finally:
-            self._lock.release()
+        with self._lock:
+            try:
+                del self._data_store[:]
+            except Exception:
+                pass
 
     def call(self, url, method=None, args=None):
         """Calls the first function matching the urls pattern and method.
