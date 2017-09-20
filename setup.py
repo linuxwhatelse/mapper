@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='lwe-mapper',
-    version='1.2.1',
+    version='1.2.2',
     description='A simple URL-Scheme resolver',
     long_description='For an overview and some examples, head over to'
                      '`Github <https://github.com/linuxwhatelse/mapper>`_',
