@@ -11,7 +11,7 @@ if sys.version_info.major == 3:
 elif sys.version_info.major == 2:
     import urlparse
 else:
-    raise ImportError('Python vesrion not supported.')
+    raise ImportError('Python version not supported.')
 
 _LOCK = threading.RLock()
 _INSTANCES = dict()
