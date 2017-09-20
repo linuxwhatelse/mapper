@@ -27,8 +27,8 @@ class Mapper(object):
     def name(self):
         return self._name
 
-    @staticmethod
-    def get(name=__name__):
+    @classmethod
+    def get(cls, name=__name__):
         """Return a Mapper instance with the given name. If the name already
            exist return its instance.
 
@@ -49,7 +49,7 @@ class Mapper(object):
             mpr = _instances[name]
 
         else:
-            mpr = Mapper()
+            mpr = cls()
             _instances[name] = mpr
 
         mpr._name = name
