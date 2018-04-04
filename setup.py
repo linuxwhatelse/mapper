@@ -8,7 +8,7 @@ with open(os.path.join(here, 'README.md'), 'r') as f:
 
 setup(
     name='lwe-mapper',
-    version='1.2.2',
+    version='1.2.5',
     description='A simple URL-Scheme resolver',
     long_description=long_description,
     long_description_content_type='text/markdown',
