@@ -18,11 +18,12 @@ class Mapper(object):
     __instances = dict()
 
     _name = None
-    _lock = threading.RLock()
 
+    _lock = None
     _data_store = None
 
     def __init__(self):
+        self._lock = threading.RLock()
         self._data_store = list()
 
     @property
@@ -231,10 +232,10 @@ class Mapper(object):
             val = float(value)
 
         elif to == bool:
-            if value.lower() == 'true' or value == '1':
+            if value.lower() in ('true', '1'):
                 val = True
 
-            elif value.lower() == 'false' or value == '0':
+            elif value.lower() in ('false', '0'):
                 val = False
 
         return val
