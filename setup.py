@@ -1,11 +1,17 @@
+import os
 from setuptools import setup
+
+
+here = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(here, 'README.md'), 'r') as f:
+    long_description = f.read()
 
 setup(
     name='lwe-mapper',
     version='1.2.2',
     description='A simple URL-Scheme resolver',
-    long_description='For an overview and some examples, head over to'
-                     '`Github <https://github.com/linuxwhatelse/mapper>`_',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/linuxwhatelse/mapper',
     author='linuxwhatelse',
     author_email='info@linuxwhatelse.com',
