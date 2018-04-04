@@ -13,11 +13,10 @@ elif sys.version_info.major == 2:
 else:
     raise ImportError('Python version not supported.')
 
-_LOCK = threading.RLock()
-_INSTANCES = dict()
-
 
 class Mapper(object):
+    __instances = dict()
+
     _name = None
     _lock = threading.RLock()
 
@@ -40,22 +39,19 @@ class Mapper(object):
            Using `Mapper.get()` is the prefered way.
 
         Args:
-            name (str): Name of the instance
+            name (str): Name for the newly created instance.
+
+        Returns:
+            Mapper: A instance of mapper for the given name.
         """
-        mpr = None
         if not isinstance(name, str):
             raise TypeError('A mapper name must be a string')
 
-        with _LOCK:
-            if name in _INSTANCES:
-                mpr = _INSTANCES[name]
+        if name not in cls.__instances:
+            cls.__instances[name] = cls()
+            cls.__instances[name]._name = name
 
-            else:
-                mpr = cls()
-                _INSTANCES[name] = mpr
-
-            mpr._name = name
-        return mpr
+        return cls.__instances[name]
 
     def url(self, pattern, method=None, type_cast=None):
         """Decorator for registering a path pattern.
