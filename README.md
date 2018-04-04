@@ -44,9 +44,9 @@ You have two options:
 
 #### The very basic
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # Note: A path will ALWAYS end with a "/" regardless
 # if your URL contains a trailing "/" or not
@@ -63,9 +63,9 @@ mpr.call('http://some.url/some/path')
 
 #### URL with a query
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # Note: Adding a query does NOT change the fact that
 # the path will end with a "/" for the regex pattern
@@ -83,9 +83,9 @@ mpr.call('http://some.url/some/path')
 
 #### Query value type cast
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # By default all parameters will be of type "string".
 # You can change the type by supplying a dict where the key matches your parameters name and the value is one of:
@@ -103,9 +103,9 @@ mpr.call('http://some.url/some/path?a_int=123&a_float=1.0&a_bool=true')
 
 #### Extracting values from a URLs path
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # In pure python regex fashion we define a named capture group within our pattern to
 # match whatever we want.
@@ -121,9 +121,9 @@ mpr.call('http://some.url/some/path/abc/456/')
 
 #### Pythons kwargs
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # It's pretty simple and type-casting works as well
 @mpr.s_url('/some/path/', type_cast={'param1' : int, 'param2' : float, 'param3' : bool})
@@ -135,9 +135,9 @@ mpr.call('http://some.url/some/path?param1=123&param2=1.0&param3=true')
 
 #### Return values
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 # Whatever you return will be returned by mapper
 @mpr.s_url('/some/path/')
@@ -150,9 +150,9 @@ a_str, a_int, a_float, a_bool = mpr.call('http://some.url/some/path')
 #### Using the "add" function instead of the decorator
 Sometimes you might have to register a function with the mapper at a later point. This can easily be achieved by using the mappers "add" function.
 ``` python
-import mapper
+from mapper import Mapper
 
-mpr = mapper.Mapper()
+mpr = Mapper.get()
 
 def func(param1, param2):
     print(param1, param2)
