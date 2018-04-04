@@ -130,8 +130,8 @@ class Mapper(object):
         """
         with self._lock:
             try:
-                path = '^/%s' % path.lstrip('/')
-                path = '%s/$' % path.rstrip('/')
+                path = '^/{}'.format(path.lstrip('/'))
+                path = '{}/$'.format(path.rstrip('/'))
                 path = path.replace('<', '(?P<')
                 path = path.replace('>', '>[^/]*)')
 
