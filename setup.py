@@ -14,7 +14,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/linuxwhatelse/mapper',
     author='linuxwhatelse',
-    author_email='info@linuxwhatelse.com',
+    author_email='info@linuxwhatelse.de',
     license='GPLv3',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
